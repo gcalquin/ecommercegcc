@@ -35,4 +35,22 @@ class OrderTest < ActiveSupport::TestCase
     assert_equal order.order_items.count, 0
   end
 
+
+
+  test "total a centavos" do
+    user1 = User.create(email:"mail@mail.com", password:"123456")
+    order = create(user: user1, total: 100)
+
+    assert_equal order.total_cents, 10000
+  end
+
+
+  test "orden a pago" do
+    user1 = User.create(email:"mail@mail.com", password:"123456")
+    order = create(user: user1, total: 100)
+    payment_method.create(name: "Paypal Express Checkout", code:"PEC")
+    order.create_payment("PEC", "token_123456")
+    assert_equal order.payments.last.state, "processing"
+
+  end
 end
